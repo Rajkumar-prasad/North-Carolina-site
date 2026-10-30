@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://garagedoorrepairservices.online/sitemap.xml
