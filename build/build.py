@@ -245,10 +245,13 @@ def crumbs_html(items):
 
 
 # ------------------------------------------------------------------ sections
+SVC_IMG = {"spring": "technician-drill.webp", "opener": "technicians.webp", "install": "garage-red.webp", "panel": "garage-blue.webp"}
+
+
 def services_section(city=None):
     where = f" in {e(city)}" if city else ""
     cards = "".join(
-        f'<a class="svc{" solid" if i == 0 else ""}" href="{link}"><span class="tag">Service {i+1:02d}</span><span class="ico">{ICONS[k]}</span>'
+        f'<a class="svc{" solid" if k not in SVC_IMG else ""}" href="{link}"' + (f' style="--img:url(/images/{SVC_IMG[k]})"' if k in SVC_IMG else '') + f'><span class="tag">Service {i+1:02d}</span><span class="ico">{ICONS[k]}</span>'
         f'<h3>{e(t)}</h3><p>{e(d)}</p><span class="more">Learn more &rarr;</span></a>'
         for i, (k, t, d, link) in enumerate(SERVICES))
     return f'''<section class="section mist"><div class="wrap">
@@ -326,7 +329,7 @@ def build_home(cities, covered, top):
 <p class="lead">Broken springs, doors off track, openers that won't respond, or a brand-new door - one call connects you with an independent local garage door provider.</p>
 <div class="hero-actions">{call_btn('btn-lime')}<a class="btn btn-ghost" href="/{C['state_slug']}/">Find your city <span class="dot">{ICONS['arrow']}</span></a></div>
 {zipbox()}
-</div><div>{door_art()}</div></div>
+</div><div class="hero-photo"><img src="/images/technician-hero.webp" alt="Garage door technician" width="443" height="780" fetchpriority="high"></div></div>
 <div class="hero-stats">
 <div class="stat"><b>{n_cities}</b><span>NC cities covered</span></div>
 <div class="stat"><b>{n_zips}</b><span>ZIP codes served</span></div>
@@ -338,7 +341,7 @@ def build_home(cities, covered, top):
 <div class="head-row"><div><div class="eyebrow">Common problems</div><h2>What's happening with your garage door?</h2></div>
 <p class="lead">Choose the problem that sounds closest to yours to see what usually causes it and what to do next.</p></div>
 <div class="problem-grid"><div class="stack">{pcard(0, problems[0])}{pcard(1, problems[1])}</div>
-<div class="feature-art">{door_art('')}</div>
+<div class="photo"><img src="/images/technicians.webp" alt="Two garage door technicians" width="604" height="388" loading="lazy"></div>
 <div class="stack">{pcard(2, problems[2])}{pcard(3, problems[3])}</div></div>
 </div></section>
 
@@ -349,7 +352,7 @@ def build_home(cities, covered, top):
 <p class="lead">A garage door problem can stop your whole day. We help you understand what's wrong and get connected with someone local who can fix it.</p>
 <div class="grid g2" style="margin:24px 0">{minis}</div>
 {call_btn('btn-dark', 'Call to get connected')}</div>
-<div class="feature-art" style="min-height:420px">{door_art('')}</div>
+<div class="photo tall"><img src="/images/technician-drill.webp" alt="Technician working in an open garage" width="616" height="650" loading="lazy"></div>
 </div></section>
 
 {steps_section()}
@@ -541,6 +544,7 @@ def build_assets(covered, nc_map):
     os.makedirs(os.path.join(OUT, "assets"), exist_ok=True)
     shutil.copy(os.path.join(BUILD, "style.css"), os.path.join(OUT, "assets", "style.css"))
     shutil.copy(os.path.join(BUILD, "main.js"), os.path.join(OUT, "assets", "main.js"))
+    shutil.copytree(os.path.join(BUILD, "images"), os.path.join(OUT, "images"))
     with open(os.path.join(OUT, "assets", "zips.js"), "w") as f:
         f.write("window.NC_ZIPS=" + json.dumps(nc_map, separators=(",", ":")) + ";\n")
         f.write('window.COVERED_ZIPS=",' + ",".join(covered) + ',";\n')
